@@ -25,14 +25,11 @@ class Note(models.Model):
 
     def save(self, edit_by: int = 0, **kwargs):
         """Если запись редактируется, то обязателен именованный аргумент edit_by, с int значением - id пользователя"""
-        note = Note.objects.filter(id__exact=self.id, author_id__exact=self.author_id)
-        if note.count():
-            note = note[0]
+        if Note.objects.filter(id__exact=self.id, author_id__exact=self.author_id).count():
             if not edit_by:
                 raise FieldError("В функцию save() не был передан обязательный именованный аргумент edit_by!")
             if not isinstance(edit_by, int):
                 raise ValueError("Значение неподходящее для обязательного именованного аргумента edit_by")
-            if not note.publication_date == self.publication_date:
-                if not edit_by == self.author_id:
-                    raise MismatchNoteAuthor(self.author_id, edit_by)
+            if not edit_by == self.author_id:
+                raise MismatchNoteAuthor(self.author_id, edit_by)
         super().save(**kwargs)
