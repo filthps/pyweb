@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+{% block head %}
+
+{% endblock head %}
+{% block body %}
+    <div class="notes-raw"></div>
+{% endblock body %}
+{% block scripts %}
+    <script>
+        function init() {
+            let link = '{{ content_upload_link }}'
+            let csrf_string = '{% csrf_token %}'
+        }
+    </script>
+{% endblock scripts %}
