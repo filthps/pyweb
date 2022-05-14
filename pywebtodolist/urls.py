@@ -15,9 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from note_api.urls import api_urls
 
 urlpatterns = [
-    path('notes/', include(api_urls)),
+    path('notes/', include("note_api.urls")),
     path('admin/', admin.site.urls),
 ]
