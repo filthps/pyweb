@@ -1,4 +1,4 @@
-
+from rest_framework.exceptions import APIException
 
 class MismatchNoteAuthor(Exception):
     def __init__(self, id_from_instance, user_id):
