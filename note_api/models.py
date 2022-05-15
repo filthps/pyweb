@@ -15,9 +15,9 @@ NOTE_STATES = (
 
 
 class Note(models.Model):
-    id = models.UUIDField(default=uuid.uuid4(), primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     is_important = models.BooleanField(default=False)
-    state = models.CharField(max_length=30, choices=NOTE_STATES, default=0)
+    state = models.PositiveSmallIntegerField(choices=NOTE_STATES, default=0)
     author = models.ForeignKey(User, editable=False, on_delete=models.SET_NULL, null=True)
     inner = models.TextField(blank=False)
     #  is_public
