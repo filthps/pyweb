@@ -1,15 +1,22 @@
 {% extends 'main.html' %}
+{% load static %}
 {% block head %}
 
 {% endblock head %}
 {% block body %}
-    <div class="notes-raw"></div>
+    <div class="notes-raw">
+        <div id="note">
+            <p><a href="">{{ inner }}</a></p>
+        </div>
+    </div>
 {% endblock body %}
 {% block scripts %}
     <script>
-        function init() {
-            let link = '{{ content_upload_link }}'
-            let csrf_string = '{% csrf_token %}'
+        function init_() {
+            let link = '{{ content_upload_link }}';
+            let csrf_string = '{{ csrf_str }}';
+            return notes_wall(link, csrf_string);
         }
     </script>
+    <script src="{% static "js/notes-list.js" %}"></script>
 {% endblock scripts %}
