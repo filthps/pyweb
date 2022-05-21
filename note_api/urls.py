@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import NotesList, CheckNewNotes, LoadNoteListPage, AJAX_CHECK_NOTES_URL
+from .views import NotesList, CheckNewNotes
 
+
+AJAX_CHECK_NOTES_URL = 'check-new-notes'
 
 urlpatterns = [
-    path('all/', LoadNoteListPage.as_view()),
-    path('all/<int:page>/', NotesList.as_view()),
+    path('', NotesList.as_view(), name="notes-list"),
     path(f'all/{AJAX_CHECK_NOTES_URL}/', CheckNewNotes.as_view()),
 ]
