@@ -13,7 +13,9 @@ from .serializer import notes_short_serializer, NoteSerializer
 from .helper import Helper
 from .models import Note
 from .paginator import NotePaginator
-from .urls import AJAX_CHECK_NOTES_URL
+
+
+AJAX_CHECK_NOTES_URL = 'check-new-notes'
 
 
 class NotesList(ListAPIView, Helper):
