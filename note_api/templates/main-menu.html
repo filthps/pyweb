@@ -1,0 +1,22 @@
+{% load i18n %}
+<div id="menu">
+        <nav>
+            <ul>
+                <li>
+                    <strong>
+                        {% url "notes-list" as all_notes_path %}
+                        {% if not url == all_notes_path %}
+                            <a href = "{{ all_notes_path }}">{% translate "Notes" %}</a>
+                        {% else %}
+                            {% translate "Notes" %}
+                        {% endif %}
+                    </strong>
+                </li>
+                <li>
+                    <strong><a>
+
+                    </a></strong>
+                </li>
+            </ul>
+        </nav>
+    </div>

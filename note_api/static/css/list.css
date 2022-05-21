@@ -1,6 +1,10 @@
 .notes-raw {
-    float: left;
+    position: relative;
+    float: none;
     width: 968px;
     height: auto;
     margin: 0 auto;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px 15px;
+    box-shadow: 3px 19px 19px #999;
 }

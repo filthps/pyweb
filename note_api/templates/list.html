@@ -1,22 +1,33 @@
 {% extends 'main.html' %}
 {% load static %}
 {% block head %}
-
+    <link rel="stylesheet" href="{% static "css/list.css" %}">
 {% endblock head %}
 {% block body %}
     <div class="notes-raw">
-        <div id="note">
-            <p><a href="">{{ inner }}</a></p>
+        <div class="top-navbar">
+            {% include "notes-paginatior.html" %}
+        </div>
+            {% for note in notes %}
+                <div class="note">
+                    <p>{{ note.inner }}</p>
+                </div>
+            {% endfor %}
+        <div class="foot-navbar">
+            {% include "notes-paginatior.html" %}
         </div>
     </div>
 {% endblock body %}
 {% block scripts %}
     <script>
+    function get_token() {
+        return '{{ csrf_str }}';
+    }
         function init_() {
             let link = '{{ content_upload_link }}';
-            let csrf_string = '{{ csrf_str }}';
-            return notes_wall(link, csrf_string);
+            return wall_auto_update(link);
         }
     </script>
     <script src="{% static "js/notes-list.js" %}"></script>
+
 {% endblock scripts %}

@@ -1,0 +1,9 @@
+<ul>
+    {% for page_item in paginator.page_links %}
+        {% if page_item.is_active %}
+            <li><p>{{ page_item.number }}</p></li>
+        {% else %}
+            <li><p><a href="{{ page_item.url }}">{{ page_item.number }}</a></p></li>
+        {% endif %}
+    {% endfor %}
+</ul>

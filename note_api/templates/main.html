@@ -1,13 +1,21 @@
+{% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ tittle }}</title>
+    <title>{% translate "title_notes_list" %}</title>
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <script src="{% url 'javascript-catalog' %}"></script>
     {% block head %}{% endblock head %}
 </head>
 <body>
+{% include "main-menu.html" %}
 <div id="main_container">
     {% block body %}{% endblock body %}
+</div>
+<div id="foot">
+    <div class="inner"><small>Copyright 2022 HSE, Python-dev, group 2, viklit. [PyWEB]</small></div>
 </div>
 </body>
 {% block scripts %}{% endblock scripts %}

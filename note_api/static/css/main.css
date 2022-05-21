@@ -1,6 +1,35 @@
-#main_container {
-    display: block;
-    position: relative;
+#menu {
+    position: absolute;
     width: 100%;
-    height: auto;
+    height: 5%;
+}
+#menu ul {
+    display: block;
+    float: none;
+    width: 968px;
+    margin: 0 auto;
+}
+#menu ul li {
+    display: inline-block;
+    float: left;
+}
+#main_container, #foot {
+    position: absolute;
+    display: block;
+    width: 100%;
+}
+#main_container {
+    height: 95%;
+    bottom: -5%;
+    background: linear-gradient(#FFF, #649393);
+}
+#foot {
+    height: 5%;
+    bottom: -5%;
+}
+#foot .inner {
+    position: relative;
+    width: 968px;
+    margin: 0 auto;
+    text-align: center;
 }

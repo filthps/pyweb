@@ -1,4 +1,7 @@
-function notes_wall(link, token) {
+import {scrollTo} from "scroll-js";
+
+
+function wall_auto_update(link) {
     let path = document.location + link + '/';
     let time = 0;
     let page = 0;
@@ -13,18 +16,6 @@ function notes_wall(link, token) {
         if (!isNaN(last_symbol)) {
             window.location.pathname = url.slice(0, url.indexOf(last_symbol));
         }
-    }
-    function xhr_request(path, data, callback, token) {
-        let loader = new XMLHttpRequest();
-        loader.open('POST', path, true);
-        loader.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        loader.setRequestHeader('X-CSRFToken', token);
-        loader.onload = function (event) {
-            if (loader.readyState === 4 && loader.status === 200) {
-                callback(loader.response);
-            }
-        }
-        loader.send(data ? JSON.stringify(data) : null);
     }
     load_button = function() {
         let d = document;
@@ -50,5 +41,17 @@ function notes_wall(link, token) {
     // и исключений на фронте к этому моменту не возникло, то перенаправляемся на
     // спецально обученный url, где предусмотрена работа в режиме ajax
     content_checker(path, token);
-}
+};
+function xhr_request(path, data, callback, token) {
+        let loader = new XMLHttpRequest();
+        loader.open('POST', path, true);
+        loader.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        loader.setRequestHeader('X-CSRFToken', token);
+        loader.onload = function (event) {
+            if (loader.readyState === 4 && loader.status === 200) {
+                callback(loader.response);
+            }
+        }
+        loader.send(data ? JSON.stringify(data) : null);
+    }
 init_();
