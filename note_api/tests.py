@@ -1,10 +1,15 @@
+import os
 import datetime
 import uuid
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import FieldError
+from rest_framework.request import Request, HttpRequest
+from django.test import RequestFactory
+from django.conf import settings
 from .models import Note
 from .exceptions import MismatchNoteAuthor
+from .views import NotesList
 
 
 class TestApiModelsAuthorEditPublishTime(TestCase):
@@ -44,3 +49,9 @@ class TestApiModelsAuthorEditPublishTime(TestCase):
         note.inner = "rsdgsdgdgdfgdsfsgsdg"
         note.publication_date = datetime.datetime.now()
         note.save(edit_by=user.id)
+
+
+class NotesViewTest(TestCase):
+    def test_get(self):
+        responce = self.client.get(os.path.join(settings.BASE_DIR, '/notes/all/1'))
+        print()
