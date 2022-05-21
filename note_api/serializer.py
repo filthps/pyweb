@@ -2,11 +2,12 @@ from rest_framework import serializers
 from .models import Note
 
 
-class NoteSerializer(serializers.HyperlinkedModelSerializer):
+class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = '__all__'
 
 
-def note_serializer_id(note):
-    return [v.get("id") for v in note.values("id")]
+def notes_id_serializer(notes):
+    return [v.get("id") for v in notes.values("id")]
+
