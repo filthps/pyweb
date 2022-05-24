@@ -15,13 +15,14 @@ NOTE_STATES = (
 
 
 class Note(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    is_important = models.BooleanField(default=False)
-    state = models.PositiveSmallIntegerField(choices=NOTE_STATES, default=0)
-    author = models.ForeignKey(User, editable=False, on_delete=models.SET_NULL, null=True)
-    inner = models.TextField(blank=False)
-    #  is_public
-    publication_date = models.DateTimeField(default=datetime.datetime.now() + datetime.timedelta(days=1))
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    is_important = models.BooleanField(default=False, verbose_name=gtlz("Важно"))
+    state = models.PositiveSmallIntegerField(blank=False, choices=NOTE_STATES, default=0)
+    author = models.ForeignKey(User, editable=False, on_delete=models.CASCADE, verbose_name=gtlz("Автор"))
+    inner = models.TextField(blank=False, verbose_name=gtlz("Текст заметки"))
+    is_public = models.BooleanField(default=False, verbose_name=gtlz("Публичная"))
+    publication_date = models.DateTimeField(default=datetime.datetime.now() + datetime.timedelta(days=1),
+                                            verbose_name=gtlz("Дата публикации"))
 
     def save(self, edit_by: int = 0, **kwargs):
         """Если запись редактируется, то обязателен именованный аргумент edit_by, с int значением - id пользователя"""
@@ -33,3 +34,7 @@ class Note(models.Model):
             if not edit_by == self.author_id:
                 raise MismatchNoteAuthor(self.author_id, edit_by)
         super().save(**kwargs)
+
+    def __str__(self):
+        end = "..." if len(self.inner) > 10 else ""
+        return f"{self.inner[:10]}{end}"
