@@ -7,7 +7,28 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = '__all__'
 
+    edit_perm = serializers.SerializerMethodField('edit_permission')
+    delete_perm = serializers.SerializerMethodField('delete_permission')
 
-def notes_short_serializer(notes):
-    return [{'id': v.get('id'), 'time': v.get('publication_date')} for v in notes.values('id', 'publication_date')]
+    def edit_permission(self, instance):
+        user = self.context.get('user')
+        if user is None:
+            return False
+        if user.is_authenticated:
+            if instance.author_id == user.id:
+                return True
+        return False
+
+    def delete_permission(self, instance):
+        user = self.context.get('user')
+        if user is None:
+            return False
+        if user.is_authenticated:
+            if instance.author_id == user.id:
+                return True
+        return False
+
+
+def notes_id_serializer(notes):
+    return [v.get('id') for v in notes.values('id')]
 
