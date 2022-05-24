@@ -129,4 +129,3 @@ class EditNote(APIView, UpdateModelMixin):
 
 class AboutPage(TemplateView):
     template_name = "about.html"
-
