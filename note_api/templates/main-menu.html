@@ -1,22 +1,51 @@
 {% load i18n %}
 <div id="menu">
         <nav>
-            <ul>
-                <li>
-                    <strong>
-                        {% url "notes-list" as all_notes_path %}
-                        {% if not url == all_notes_path %}
-                            <a href = "{{ all_notes_path }}">{% translate "Notes" %}</a>
-                        {% else %}
-                            {% translate "Notes" %}
-                        {% endif %}
-                    </strong>
-                </li>
-                <li>
-                    <strong><a>
-
-                    </a></strong>
-                </li>
-            </ul>
+            <div class="wrap">
+                <ul>
+                    {% url "notes-list" as all_notes_path %}
+                    {% if not url == all_notes_path %}
+                        <li>
+                            <strong>
+                                <a href = "{{ all_notes_path }}">{% translate "Все заметки" %}</a>
+                            </strong>
+                        </li>
+                    {% else %}
+                        <li class = "selected">
+                            <strong>
+                                {% translate "Все заметки" %}
+                            </strong>
+                        </li>
+                    {% endif %}
+                    {% url "create-note" as create_path %}
+                    {% if not url == create_path %}
+                        <li>
+                            <strong>
+                                <a href="{{ create_path }}">{% translate "Добавить заметку" %}</a>
+                            </strong>
+                        </li>
+                    {% else %}
+                        <li class="selected">
+                            <strong>
+                                {% translate "Добавить заметку" %}
+                            </strong>
+                        </li>
+                    {% endif %}
+                    {% url "about" as about_path %}
+                    {% if not url == about_path %}
+                        <li>
+                            <strong>
+                                <a href="{{ about_path }}">{% translate "О сайте" %}</a>
+                            </strong>
+                        </li>
+                    {% else %}
+                        <li class="selected">
+                            <strong>
+                                {% translate "О сайте" %}
+                            </strong>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </nav>
     </div>

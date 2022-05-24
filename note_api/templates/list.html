@@ -2,6 +2,7 @@
 {% load static %}
 {% block head %}
     <link rel="stylesheet" href="{% static "css/list.css" %}">
+    <script src="{% static "js/exceptions.js" %}"></script>
 {% endblock head %}
 {% block body %}
     <div class="notes-raw">
@@ -24,8 +25,12 @@
         return '{{ csrf_str }}';
     }
         function init_() {
-            let link = '{{ content_upload_link }}';
-            return wall_auto_update(link);
+        let module_name = 'wall_auto_update'
+            let find_notes_url = '{% url "find-new-notes" %}';
+            let load_notes_url = '{% url "load-notes" %}';
+            let module = window.wall_auto_update || false;
+            !module ? throw new InitializationError(module_name) : 0;
+            module(find_notes_url, load_notes_url);
         }
     </script>
     <script src="{% static "js/notes-list.js" %}"></script>

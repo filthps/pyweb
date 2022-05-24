@@ -1,5 +1,4 @@
-import {scrollTo} from "scroll-js";
-
+//import {scrollTo} from "scroll-js";
 
 function wall_auto_update(link) {
     let path = document.location + link + '/';
