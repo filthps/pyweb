@@ -111,12 +111,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-#LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
 LANGUAGES = (
     ('en-us', _('English')),
     ('ru', _('Russian')),
 )
+
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M',
+}
 
 LANGUAGE_CODE = 'en-us'
 

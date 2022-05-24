@@ -11,13 +11,14 @@ def filter_by_public(queryset: QuerySet[Note]):
 class Ordering(ABCOrdering):
 
     @classmethod
-    def order_notes(cls, f: Callable, qs: QuerySet[Note] = None):
+    def order_notes(cls, f: Callable = None, qs: QuerySet[Note] = None):
         if qs is not None:
             cls.__notes = qs
             return cls.__ordering()
 
         def wrap(*args):
             cls.__notes = f(*args)
+            cls.__ordering()
             return cls.__notes
         return wrap
 
