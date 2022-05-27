@@ -2,6 +2,9 @@ strong {
     font-family: Lobster-Regular;
     font-size: 14pt;
 }
+body {
+    overflow-x: hidden;
+}
 #menu {
     position: fixed;
     width: 100%;
@@ -32,10 +35,11 @@ strong {
 }
 #menu strong, #menu a:hover, #menu a:focus, #menu .selected {
     color: #2C2C2C;
-    text-shadow: 1px 1px #f2f2f2;
+    text-shadow: 1px 1px #f4f4f4;
 }
 #menu a {
     color: #1b6d85;
+    text-shadow: 1px 1px #c8c8c8
 }
 #menu ul li:last-child {
     border-right: 0;
@@ -51,6 +55,12 @@ strong {
     background: linear-gradient(#FFF, #bfdcdd);
 }
 #main_container > div {
+    position: relative;
+    float: none;
+    width: 968px;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px 15px;
     background-color: #FFF;
     box-shadow: 2px 10px 10px #cacaca;
     border: 1px solid #CCC;
