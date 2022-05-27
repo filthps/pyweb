@@ -15,6 +15,10 @@ NOTE_STATES = (
 
 
 class Note(models.Model):
+    class Meta:
+        verbose_name = gtlz("Заметка")
+        verbose_name_plural = gtlz("Заметки")
+
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     is_important = models.BooleanField(default=False, verbose_name=gtlz("Важно"))
     state = models.PositiveSmallIntegerField(blank=False, choices=NOTE_STATES, default=0)
