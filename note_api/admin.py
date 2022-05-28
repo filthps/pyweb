@@ -11,8 +11,11 @@ class NotesAdmin(admin.ModelAdmin):
     ordering = ('publication_date', 'is_important',)
 
     def has_change_permission(self, request, obj=None):
+        user = request.user
+        if user.is_superuser:
+            return True
         if obj is not None:
-            if request.user.id == obj.author_id:
+            if user.id == obj.author_id:
                 return True
         return False
 
