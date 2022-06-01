@@ -40,6 +40,5 @@ class NoteSerializer(serializers.ModelSerializer):
         attrs['author_id'] = self.context['user'].id
         return attrs
 
-
 def notes_id_serializer(notes):
     return [v.get('id') for v in notes.values('id')]

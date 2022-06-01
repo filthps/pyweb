@@ -4,7 +4,7 @@ from typing import Pattern
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -98,23 +98,22 @@ class NotesLoader(APIView, Helper):
         return bool(r.match(id_))
 
 
-class CreateNote(APIView, Helper):
-    permission_classes = (IsAuthenticated,)
-    renderer_classes = (TemplateHTMLRenderer, JSONRenderer,)
+class CreateNote(TemplateView, CreateAPIView):
+    template_name = ""
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
 
-    def get(self, request):
-        return Response({
-            'serializer': NoteSerializer(),
-            'form_url': reverse("create-note")}, template_name='create-note.html')
+
+class CreateNoteShort(APIView, Helper):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (JSONRenderer,)
 
     def post(self, request):
-        serializer = NoteSerializer(data=request.data, context={'user': request.user})
-        if not serializer.is_valid():
-            return Response({'serializer': serializer}, template_name='create-note.html', status=status.HTTP_200_OK)
-        serializer.save()
         if self.is_ajax(request.headers):
+            serializer = NoteSerializer(data=request.data, context={'user': request.user})
+            serializer.save()
             return Response({'created_note': serializer.data}, status=status.HTTP_201_CREATED)
-        return redirect('notes-list')
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class EditNote(APIView, UpdateModelMixin):
