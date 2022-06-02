@@ -1,5 +1,6 @@
 {% load rest_framework %}
 
+
 <form method="POST" action = "{% url "create-note" %}">
     {% csrf_token %}
     {% render_form serializer %}

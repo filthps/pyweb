@@ -43,7 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'note_api',
+    'user',
 ]
+
+AUTH_USER_MODEL = 'user.ExtendedUser'
+
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/notes/"
+LOGOUT_REDIRECT_URL = "/notes/"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,7 +126,7 @@ LANGUAGES = (
 )
 
 REST_FRAMEWORK = {
-    'DATETIME_FORMAT' : '%Y-%m-%dT%H:%M',
+    'DATETIME_FORMAT': '%Y-%m-%dT%H:%M',
 }
 
 LANGUAGE_CODE = 'en-us'
@@ -136,6 +143,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
