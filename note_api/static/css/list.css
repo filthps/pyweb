@@ -1,0 +1,23 @@
+.top-navbar ul, .foot-navbar ul {
+    display: block;
+}
+.top-navbar ul li, .foot-navbar ul li {
+    display: inline-block;
+    width: auto;
+    padding: 5px;
+    margin: 0 5px;
+    background-color: #bfdcdd;
+    border: 1px solid #688791;
+    border-radius: 2px;
+}
+.top-navbar h4, .foot-navbar h4 {
+    font-family: Lobster-Regular;
+    font-size: 11pt;
+    margin: 0;
+    color: #2C2C2C;
+    text-shadow: 1px 1px #f4f4f4;
+}
+.top-navbar h4 a, .foot-navbar h4 a {
+    color: #1b6d85;
+    text-shadow: 1px 1px #c8c8c8
+}
