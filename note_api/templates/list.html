@@ -27,7 +27,7 @@
         </div>
             {% for note in notes %}
                 <div class="note">
-                    <p>{{ note.inner }}</p>
+                    <p>{{ note.inner|truncatechars:50 }}</p>
                 </div>
             {% endfor %}
         <div class="foot-navbar">

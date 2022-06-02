@@ -1,12 +1,11 @@
-import re
-import datetime
-from typing import Pattern
+from django.shortcuts import redirect, reverse
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.views import APIView
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
 from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from .serializer import NoteSerializer
@@ -41,7 +40,7 @@ class NotesList(ListAPIView, Helper):
         return {'user': self.request.user}
 
 
-class CreateNote(LoginRequiredMixin, TemplateView, CreateAPIView):
+class CreateNote(LoginRequiredMixin, TemplateView, CreateAPIView, Helper):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (TemplateHTMLRenderer, JSONRenderer)
     template_name = "create-note.html"
@@ -52,19 +51,18 @@ class CreateNote(LoginRequiredMixin, TemplateView, CreateAPIView):
         return {'serializer': self.get_serializer()}
 
     def create(self, request, *args, **kwargs):
-        resp = super().create(request, *args, **kwargs)
-        if request.is_ajax(request.headers):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['author_id'] = request.user.id
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        if self.is_ajax(request.headers):
             return Response({
-                'data': resp.data
-            }, template_name=None)
-        return Response({
-            'serializer': self.get_serializer(resp.data)
-        })
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({'user': self.request.user})
-        return context
+                'data': serializer.data
+            }, template_name=None,
+                status=status.HTTP_201_CREATED,
+                headers=headers)
+        return redirect("notes-list")
 
 
 class EditNote(APIView, UpdateModelMixin):
