@@ -2,24 +2,18 @@ import re
 import datetime
 from typing import Pattern
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from rest_framework.views import APIView
 from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
 from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from django.urls import reverse
-from django.shortcuts import redirect
-from django.db.models import QuerySet
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
-from .serializer import notes_id_serializer, NoteSerializer
+from .serializer import NoteSerializer
 from .helper import Helper
 from .models import Note
 from .paginator import NotePaginator
 from .filters import filter_by_public, Ordering
-
-
-MAX_SIZE_NOTES = 20  # Максимальное количество notes в рамках одного запроса
 
 
 class NotesList(ListAPIView, Helper):
@@ -47,72 +41,30 @@ class NotesList(ListAPIView, Helper):
         return {'user': self.request.user}
 
 
-class CheckNewNotes(APIView, Helper):
-    MAX_SIZE = MAX_SIZE_NOTES
-
-    def get(self, request):
-        time = request.GET.get("time")
-        if time is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        self.is_valid_time(time)
-        notes = Note.objects.filter(publication_date__gt=self.convert_datetime_format(time))[:self.MAX_SIZE]
-        notes = self.filter_notes(notes)
-        return Response(data={'notes': notes_id_serializer(notes)}, status=status.HTTP_200_OK)
-
-    @staticmethod
-    def is_valid_time(time: str):
-        if not str.isdigit(time):
-            return Response(status=status.HTTP_412_PRECONDITION_FAILED)
-
-    @staticmethod
-    def convert_datetime_format(ms: str):
-        return datetime.datetime.fromtimestamp(int(ms) / 1000, tz=datetime.timezone.utc)
-
-    def filter_notes(self, n: QuerySet):
-        if self.request.user.is_authenticated:
-            return n
-        return filter_by_public(n)
-
-
-class NotesLoader(APIView, Helper):
-    reg = re.compile(r'[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89aAbB][a-f\d]{3}-[a-f\d]{12}')
-    MAX_SIZE = MAX_SIZE_NOTES
-
-    def post(self, request):
-        data = request.POST.get('id')
-        if data is None:
-            return Response(status=status.HTTP_412_PRECONDITION_FAILED)
-        cleaned_data = tuple(filter(lambda x: self.is_valid_uuid(self.reg, x), self.parse_json(data)))
-        if cleaned_data:
-            if len(cleaned_data) > self.MAX_SIZE:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-            notes = Note.objects.filter(id__in=cleaned_data)
-            notes = Ordering.order_notes(qs=notes)
-            serializer = NoteSerializer(notes, context={'user': request.user})
-            return Response(serializer.data)
-        return Response(status=status.HTTP_200_OK)
-
-    @staticmethod
-    def is_valid_uuid(r: Pattern, id_: str) -> bool:
-        return bool(r.match(id_))
-
-
-class CreateNote(TemplateView, CreateAPIView):
-    template_name = ""
+class CreateNote(LoginRequiredMixin, TemplateView, CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (TemplateHTMLRenderer, JSONRenderer)
+    template_name = "create-note.html"
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
 
+    def get_context_data(self, **kwargs):
+        return {'serializer': self.get_serializer()}
 
-class CreateNoteShort(APIView, Helper):
-    permission_classes = (IsAuthenticated,)
-    renderer_classes = (JSONRenderer,)
+    def create(self, request, *args, **kwargs):
+        resp = super().create(request, *args, **kwargs)
+        if request.is_ajax(request.headers):
+            return Response({
+                'data': resp.data
+            }, template_name=None)
+        return Response({
+            'serializer': self.get_serializer(resp.data)
+        })
 
-    def post(self, request):
-        if self.is_ajax(request.headers):
-            serializer = NoteSerializer(data=request.data, context={'user': request.user})
-            serializer.save()
-            return Response({'created_note': serializer.data}, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'user': self.request.user})
+        return context
 
 
 class EditNote(APIView, UpdateModelMixin):

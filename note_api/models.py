@@ -2,7 +2,7 @@ import uuid
 import datetime
 from django.utils.translation import gettext_lazy as gtlz
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import FieldError
 from .exceptions import MismatchNoteAuthor
 
@@ -18,7 +18,7 @@ class Note(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     is_important = models.BooleanField(default=False, verbose_name=gtlz("Важно"))
     state = models.PositiveSmallIntegerField(blank=False, choices=NOTE_STATES, default=0)
-    author = models.ForeignKey(User, editable=False, on_delete=models.CASCADE, verbose_name=gtlz("Автор"))
+    author = models.ForeignKey(get_user_model(), editable=False, on_delete=models.CASCADE, verbose_name=gtlz("Автор"))
     inner = models.TextField(blank=False, verbose_name=gtlz("Текст заметки"))
     is_public = models.BooleanField(default=False, verbose_name=gtlz("Публичная"))
     publication_date = models.DateTimeField(default=datetime.datetime.now() + datetime.timedelta(days=1),

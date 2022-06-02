@@ -1,0 +1,54 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load widget %}
+{% block head %}
+    <link rel="stylesheet" href="{% static "css/list.css" %}">
+    <script src="{% static "js/exceptions.js" %}"></script>
+{% endblock head %}
+{% block body %}
+    <div class="widget">
+        <div class="widget-inner" style="display: none">
+            {% with request.user as user %}
+                {% if user.is_authenticated %}
+                    <div class="short-profile">
+                        <div class="avatar">
+                            <img src="{{ user.avatar_thumb }}" alt="">
+                        </div>
+                    </div>
+                {% else %}
+                    {% login_widget %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="notes-raw">
+        <div class="top-navbar">
+            {% include "notes-paginatior.html" %}
+        </div>
+            {% for note in notes %}
+                <div class="note">
+                    <p>{{ note.inner }}</p>
+                </div>
+            {% endfor %}
+        <div class="foot-navbar">
+            {% include "notes-paginatior.html" %}
+        </div>
+    </div>
+{% endblock body %}
+{% block scripts %}
+    <script>
+    function get_token() {
+        return '{{ csrf_str }}';
+    }
+        function init_() {
+        let module_name = 'wall_auto_update'
+            let find_notes_url = '{% url "find-new-notes" %}';
+            let load_notes_url = '{% url "load-notes" %}';
+            let module = window.wall_auto_update || false;
+            !module ? throw new InitializationError(module_name) : 0;
+            module(find_notes_url, load_notes_url);
+        }
+    </script>
+    <script src="{% static "js/notes-list.js" %}"></script>
+
+{% endblock scripts %}

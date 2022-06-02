@@ -1,6 +1,9 @@
 from rest_framework import pagination
 
 
+MAX_SIZE_NOTES = 20  # Максимальное количество notes в рамках одного запроса
+
+
 class NotePaginator(pagination.PageNumberPagination):
-    page_size = 2
-    max_page_size = 3
+    page_size = MAX_SIZE_NOTES - 1
+    max_page_size = MAX_SIZE_NOTES
