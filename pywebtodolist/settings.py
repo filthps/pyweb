@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'note_api',
     'user',
+    'comments',
 ]
 
 AUTH_USER_MODEL = 'user.ExtendedUser'

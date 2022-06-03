@@ -27,6 +27,8 @@ class Note(models.Model):
     is_public = models.BooleanField(default=False, verbose_name=gtlz("Публичная"))
     publication_date = models.DateTimeField(default=datetime.datetime.now() + datetime.timedelta(days=1),
                                             verbose_name=gtlz("Дата публикации"))
+    comments = models.ForeignKey(to="comments.Comment", related_name="comments",
+                                 null=True, default=None, on_delete=models.CASCADE)
 
     def save(self, edit_by: int = 0, **kwargs):
         """Если запись редактируется, то обязателен именованный аргумент edit_by, с int значением - id пользователя"""

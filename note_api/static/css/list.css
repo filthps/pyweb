@@ -21,3 +21,18 @@
     color: #1b6d85;
     text-shadow: 1px 1px #c8c8c8
 }
+.note {
+    border-bottom: 1px dashed #CCC;
+}
+.note:last-child {
+    border-bottom: none;
+}
+.note form {
+    float: right;
+}
+.note input[type="submit"] {
+    background-color: transparent;
+    border: none;
+    color: #1b6d85;
+}
+

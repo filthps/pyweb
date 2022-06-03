@@ -12,7 +12,7 @@ def get_publication_date():
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = '__all__'
+        exclude = ('comments',)
 
     publication_date = serializers.DateTimeField(initial=get_publication_date())
     edit_perm = serializers.SerializerMethodField('edit_permission')

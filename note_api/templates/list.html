@@ -33,15 +33,18 @@
                 {% with note.id as id %}
                     <div class="note{% if note.is_important %} imp{% endif %}">
                         <p>{{ note.inner|truncatechars:50 }}</p>
-                        {% if note.edit_perm == True %}
-                            <small>
-                                <a href="{% url "edit-note" %}?note_id={{ id }}">{% translate "Изменить" %}</a>
-                            </small>
-                        {% endif %}
-                        {% if note.delete_perm == True %}
-                            <small>
-                                <a href="{% url "remove-note" %}?note_id={{ id }}"></a>
-                            </small>
+                        {% if note.edit_perm == True or note.delete_perm == True %}
+                            <form>
+                                {% if note.edit_perm == True %}
+                                    <input type="submit" formmethod="get"
+                                           formaction="{% url "edit-note" %}?note_id={{ id }}"
+                                           value="{% translate "Изменить" %}">
+                                {% endif %}
+                                {% if note.delete_perm == True %}
+                                    <input type="submit" formaction="{% url "remove-note" %}?note_id={{ id }}"
+                                           formmethod="post" value="{% translate "Удалить" %}">
+                                {% endif %}
+                            </form>
                         {% endif %}
                     </div>
                 {% endwith %}
