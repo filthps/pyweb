@@ -7,7 +7,7 @@ class NotesAdmin(admin.ModelAdmin):
     fields = ('inner', 'state', 'is_public', 'is_important', 'publication_date', 'author')
     list_display = ('inner', 'author')
     readonly_fields = ('author',)
-    list_filter = ('is_important', 'is_public',)
+    list_filter = ('is_important', 'is_public', 'state')
     ordering = ('publication_date', 'is_important',)
 
     def has_change_permission(self, request, obj=None):

@@ -5,6 +5,7 @@ from django.template.context_processors import csrf as get_csrf
 
 
 class Helper:
+
     @staticmethod
     def parse_json(data: str) -> Any:
         return json.loads(data)

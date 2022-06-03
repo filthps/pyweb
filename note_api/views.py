@@ -1,9 +1,9 @@
-from django.shortcuts import redirect, reverse
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from rest_framework.views import APIView
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
-from rest_framework.generics import ListAPIView, CreateAPIView
+from django.contrib import messages
+from django.utils.translation import gettext_lazy as text_
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -12,7 +12,7 @@ from .serializer import NoteSerializer
 from .helper import Helper
 from .models import Note
 from .paginator import NotePaginator
-from .filters import filter_by_public, Ordering
+from .filters import filter_by_public, filter_by_important, filter_by_state, Ordering
 
 
 class NotesList(ListAPIView, Helper):
@@ -32,8 +32,17 @@ class NotesList(ListAPIView, Helper):
 
     @Ordering.order_notes
     def filter_queryset(self, queryset):
-        if not self.request.user.is_authenticated:
+        params = self.request.query_params
+        if params.get('public') is not None:
             queryset = filter_by_public(queryset)
+        else:
+            if not self.request.user.is_authenticated:
+                queryset = filter_by_public(queryset)
+        if params.get('important') is not None:
+            queryset = filter_by_important(queryset)
+        category = params.get('category')
+        if category is not None:
+            queryset = filter_by_state(queryset, category)
         return queryset
 
     def get_serializer_context(self):
@@ -65,15 +74,60 @@ class CreateNote(LoginRequiredMixin, TemplateView, CreateAPIView, Helper):
         return redirect("notes-list")
 
 
-class EditNote(APIView, UpdateModelMixin):
-    permission_classes = (IsAuthenticated,)
+class EditNote(LoginRequiredMixin, UpdateAPIView, TemplateView, Helper):
+    template_name = "edit.html"
+    queryset = Note.objects.all()
     serializer_class = NoteSerializer
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (TemplateHTMLRenderer,)
 
-    def get(self, request):
-        ...
+    def get_context_data(self, **kwargs):
+        return {'form': self.get_serializer(**kwargs)}
 
-    def post(self, request):
-        ...
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        messages.add_message(
+            self.request,
+            messages.INFO,
+            f"{text_('Заметка')} {self.request.query_params['note_id']} {text_('изменена')}!"
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        method_name: str = self.request.POST.get('_method')
+        if method_name is not None and type(method_name) is str:
+            method = getattr(self, method_name.lower())
+            if method is not None:
+                return method(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+
+class DeleteNote(LoginRequiredMixin, DestroyAPIView, Helper):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_queryset()
+        if isinstance(obj, Response):
+            return obj
+        self.perform_destroy(obj)
+        if self.is_ajax(request.headers):
+            return Response({'id': self.request.query_params['note_id']},
+                            status=status.HTTP_204_NO_CONTENT)
+        messages.add_message(request, messages.INFO,
+                             f"{text_('Заметка')}{self.request.query_params['note_id']} {text_('удалена')}!"
+                             )
+        return redirect("notes-list")
+
+    def get_object(self):
+        note_id = self.request.query_params.get('note_id')
+        if note_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        queryset = self.get_queryset()
+        instance = queryset.filter(id=note_id)
+        if not instance.count():
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return instance[0]
 
 
 class AboutPage(TemplateView):

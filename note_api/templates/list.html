@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
-{% load widget %}
+{% load i18n %}
 {% load static %}
+{% load widget %}
 {% block head %}
     <link rel="stylesheet" href="{% static "css/list.css" %}">
     <script src="{% static "js/exceptions.js" %}"></script>
@@ -22,13 +23,28 @@
         </div>
     </div>
     <div class="notes-raw">
+        <div id="filter">
+            {% include "notes-filter.html" %}
+        </div>
         <div class="top-navbar">
             {% include "notes-paginatior.html" %}
         </div>
             {% for note in notes %}
-                <div class="note">
-                    <p>{{ note.inner|truncatechars:50 }}</p>
-                </div>
+                {% with note.id as id %}
+                    <div class="note{% if note.is_important %} imp{% endif %}">
+                        <p>{{ note.inner|truncatechars:50 }}</p>
+                        {% if note.edit_perm == True %}
+                            <small>
+                                <a href="{% url "edit-note" %}?note_id={{ id }}">{% translate "Изменить" %}</a>
+                            </small>
+                        {% endif %}
+                        {% if note.delete_perm == True %}
+                            <small>
+                                <a href="{% url "remove-note" %}?note_id={{ id }}"></a>
+                            </small>
+                        {% endif %}
+                    </div>
+                {% endwith %}
             {% endfor %}
         <div class="foot-navbar">
             {% include "notes-paginatior.html" %}

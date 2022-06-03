@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Iterable
 from django.db.models import QuerySet
 from .abstractions import Ordering as ABCOrdering
 from .models import Note
@@ -6,6 +6,14 @@ from .models import Note
 
 def filter_by_public(queryset: QuerySet[Note]):
     return queryset.filter(is_public=True)
+
+
+def filter_by_important(queryset: QuerySet[Note]):
+    return queryset.filter(is_important=True)
+
+
+def filter_by_state(queryset: QuerySet[Note], val: Iterable):
+    return queryset.filter(state__in=val)
 
 
 class Ordering(ABCOrdering):

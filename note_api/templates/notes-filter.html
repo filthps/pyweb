@@ -1,0 +1,25 @@
+{% load i18n %}
+<form method="get" action="">
+    <label for="imp">{% translate "Важные" %}
+        <input type="checkbox" name="important"
+               {% if request.query_params.important == 'on' %}checked{% endif %}></label>
+    <label for="public">{% translate "Публичные" %}
+        <input type="checkbox" name="public"
+               {% if request.query_params.public == 'on' %}checked{% endif %}>
+    </label>
+    <p>
+        <select multiple name="category">
+            <option value="0"
+                    {% if request.query_params.category == '0' %}selected{% endif %}>{% translate "Активные" %}
+            </option>
+            <option value="1"
+                    {% if request.query_params.category == '1' %}selected{% endif %}>{% translate "Отложенные" %}
+            </option>
+            <option value="2"
+            {% if request.query_params.category == '2' %}selected{% endif %}>
+                {% translate "Выполненные" %}
+            </option>
+        </select>
+    </p>
+    <input type="submit">
+</form>
