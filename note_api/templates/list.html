@@ -7,51 +7,40 @@
     <script src="{% static "js/exceptions.js" %}"></script>
 {% endblock head %}
 {% block body %}
-    <div class="widget">
-        <div class="widget-inner" style="display: none">
-            {% with request.user as user %}
-                {% if user.is_authenticated %}
-                    <div class="short-profile">
-                        <div class="avatar">
-                            <img src="{{ user.avatar_thumb }}" alt="">
-                        </div>
-                    </div>
-                {% else %}
-                    {% login_widget request %}
-                {% endif %}
-            {% endwith %}
-        </div>
-    </div>
     <div class="notes-raw">
-        <div id="filter">
-            {% include "notes-filter.html" %}
-        </div>
-        <div class="top-navbar">
-            {% include "notes-paginatior.html" %}
-        </div>
-            {% for note in notes %}
-                {% with note.id as id %}
-                    <div class="note{% if note.is_important %} imp{% endif %}">
-                        <p>{{ note.inner|truncatechars:50 }}</p>
-                        {% if note.edit_perm == True or note.delete_perm == True %}
-                            <form>
-                                {% if note.edit_perm == True %}
-                                    <input type="submit" formmethod="get"
-                                           formaction="{% url "edit-note" %}?note_id={{ id }}"
-                                           value="{% translate "Изменить" %}">
-                                {% endif %}
-                                {% if note.delete_perm == True %}
-                                    <input type="submit" formaction="{% url "remove-note" %}?note_id={{ id }}"
-                                           formmethod="post" value="{% translate "Удалить" %}">
-                                {% endif %}
-                            </form>
-                        {% endif %}
-                    </div>
-                {% endwith %}
-            {% endfor %}
-        <div class="foot-navbar">
-            {% include "notes-paginatior.html" %}
-        </div>
+        {% if notes.count %}
+            <div id="filter">
+                {% include "notes-filter.html" %}
+            </div>
+            <div class="top-navbar">
+                {% include "notes-paginatior.html" %}
+            </div>
+                {% for note in notes %}
+                    {% with note.id as id %}
+                        <div class="note{% if note.is_important %} imp{% endif %}">
+                            <p>{{ note.inner|truncatechars:50 }}</p>
+                            {% if note.edit_perm == True or note.delete_perm == True %}
+                                <form>
+                                    {% if note.edit_perm == True %}
+                                        <input type="submit" formmethod="get"
+                                               formaction="{% url "edit-note" %}?note_id={{ id }}"
+                                               value="{% translate "Изменить" %}">
+                                    {% endif %}
+                                    {% if note.delete_perm == True %}
+                                        <input type="submit" formaction="{% url "remove-note" %}?note_id={{ id }}"
+                                               formmethod="post" value="{% translate "Удалить" %}">
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            <div class="foot-navbar">
+                {% include "notes-paginatior.html" %}
+            </div>
+        {% else %}
+            <div class="empty"><p>{% translate "Список заметок пуст" %}</p></div>
+        {% endif %}
     </div>
 {% endblock body %}
 {% block scripts %}

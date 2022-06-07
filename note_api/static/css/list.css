@@ -35,4 +35,17 @@
     border: none;
     color: #1b6d85;
 }
-
+.empty {
+    display: block;
+    margin: 0 auto;
+    width: 300px;
+    text-align: center;
+    padding: 30px;
+    border: 1px solid #1b6d85;
+    background-color: #bfdcdd;
+    border-radius: 2px;
+}
+.empty p {
+    color: #194e5e;
+    text-shadow: 1px 1px #c8c8c8;
+}

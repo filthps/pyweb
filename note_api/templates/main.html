@@ -13,9 +13,11 @@
     </style>
     <link rel="stylesheet" href="{% static "css/main.css" %}">
     <script src="{% url 'javascript-catalog' %}"></script>
+    <link rel="stylesheet" href="{% static "css/widget.css" %}">
     {% block head %}{% endblock head %}
 </head>
 <body>
+{% include "login-widget.html" %}
 {% include "main-menu.html" %}
 <div id="main_container">
     {% block body %}{% endblock body %}

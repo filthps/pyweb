@@ -9,4 +9,4 @@ register = template.Library()
 @register.simple_tag()
 def login_widget(request: HttpRequest):
     if not request.user.is_authenticated:
-        return {'form': AuthenticationForm()}
+        return AuthenticationForm()

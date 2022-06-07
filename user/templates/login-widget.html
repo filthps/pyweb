@@ -1,8 +1,24 @@
-{% load rest_framework %}
+{% load static %}
+{% load widget %}
 {% load i18n %}
 <div class="widget">
-    <div class="widget-inner" style="display: none">
-        <span>{% translate "Авторизация" %}</span>
-        {{ form }}
+    {% with request.user as user %}
+        {% if user.is_authenticated %}
+            <img alt="" src="{% static "img/user.png" %}" style="width: 25px;height: auto;">
+            <div class="widget-inner" style="display: none">
+                <div class="short-profile">
+                    <div class="avatar">
+                        <img src="{{ user.avatar_thumb }}" alt="">
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <img alt="" src="{% static "img/security.png" %}" style="width: 25px; height: auto;">
+            <form style="display: none;">
+            {% login_widget request %}
+            {% csrf_token %}
+            <input type="submit" value="{% translate "Вход" %}">
+            <form>
+        {% endif %}
+    {% endwith %}
     </div>
-</div>

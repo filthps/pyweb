@@ -130,8 +130,5 @@ class DeleteNote(LoginRequiredMixin, DestroyAPIView, Helper):
         return instance[0]
 
 
-
-
-
 class AboutPage(TemplateView):
     template_name = "about.html"
